@@ -1,0 +1,12 @@
+*.log
+*.pcap
+*.pcapng
+*.tmp
+*.swp
+*~
+.DS_Store
+.env
+__pycache__/
+dist/
+build/
+reports/
