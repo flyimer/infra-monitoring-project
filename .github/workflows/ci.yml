@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Validate Bash syntax
+        run: |
+          bash -n check_api.sh
+          bash -n analyze_logs.sh
+      - name: Test HTTP 200
+        run: bash check_api.sh https://httpbin.org/status/200
+      - name: Test HTTP error handling
+        run: |
+          if bash check_api.sh https://httpbin.org/status/404; then
+            echo 'Unexpected success on HTTP 404' >&2
+            exit 1
+          fi
+      - name: Analyze generated log
+        run: |
+          bash analyze_logs.sh
+          test "$(wc -l < access.log)" -ge 300
